@@ -73,7 +73,7 @@ while getopts ":dsSb:v:" opt; do
     b)
       [[ ! "${OPTARG}" =~ "gdb" ]]
       BACKEND_GDB=$?
-      
+
       [[ ! "${OPTARG}" =~ "lldb" ]]
       BACKEND_LLDB=$?
       ;;
@@ -105,14 +105,8 @@ set -ex
 
 function install_apt {
     if [ -n "${APT_GET}" ]; then
-        if [ -z "${SKIP_UPDATE}" ]; then
-            sudo apt-get update
-        fi
-        if echo $PYVER|grep "3\."; then
-            sudo apt-get -y install libreadline6-dev python3-dev python3-setuptools python3-yaml python3-pip
-        else
-            sudo apt-get -y install libreadline6-dev python-dev python-setuptools python-yaml python-pip
-        fi
+        sudo apt-get -y install libreadline6-dev python3-dev python3-setuptools python3-yaml python3-pip
+        sudo apt-get -y install libreadline6-dev python-dev python-setuptools python-yaml python-pip
     fi
 }
 
@@ -179,7 +173,7 @@ function get_lldb_python_exe {
     # Find the Python version used by LLDB
     local lldb_pyver=$(${LLDB} -Q -x -b --one-line 'script import platform; print(".".join(platform.python_version_tuple()[:2]))'|tail -1)
     local lldb_python=$(${LLDB} -Q -x -b --one-line 'script import sys; print(sys.executable)'|tail -1)
-    
+
     lldb_python=$(${LLDB} -Q -x -b --one-line 'script import sys; print(sys.executable)'|tail -1)
     local lldb_python_basename=$(basename "${lldb_python}")
     if [ "python" = "$lldb_python_basename" ];
